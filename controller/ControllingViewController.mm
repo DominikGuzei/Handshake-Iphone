@@ -15,29 +15,26 @@
 @synthesize webView;
 @synthesize url;
 
--(id) initWithUrl: (NSString*) urlString
+-(id) initWithDelegate: (id <ControllingViewDelegate>) delegate
 {
-	NSLog(urlString);
 	self = [super initWithNibName:@"ControllingView" bundle:nil];
-	// Example 1, loading the content from a URLNSURL
-	url = [NSURL URLWithString:urlString];
+	actionDelegate = delegate;
 	return self;
 }
 
+-(void) openWebsiteWithUrl: (NSString*) urlString
+{
+	url = [NSURL URLWithString:urlString];
+	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+	[webView loadRequest:request];
+}
+
 -(IBAction) chooseOtherGame {
-	ConnectingViewController *connectingViewController = [[ConnectingViewController alloc] init];
-	[self presentModalViewController:connectingViewController animated:YES];
-	[connectingViewController retain];
+	[actionDelegate startReadingQrCode];
 }
 
 -(IBAction) showConnectingView {
-	NSLog(@"bla");
-}
-
--(void) viewDidLoad
-{
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
-	[webView loadRequest:request];
+	[actionDelegate showConnectingView];
 }
 
 - (void) dealloc

@@ -13,9 +13,6 @@
 @implementation HandshakeAppDelegate
 
 @synthesize window;
-@synthesize connectingViewController;
-@synthesize controllingViewController;
-
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -24,10 +21,23 @@
     
     // Override point for customization after application launch.
     // Add the view controller's view to the window and display.
-    
-	[window addSubview:connectingViewController.view];
-    [window makeKeyAndVisible];
+	[window makeKeyAndVisible];
+	
+	[self showStartupScreen];
+	
+	qrCodeReaderViewController = [[QrCodeReaderViewController alloc] initWithDelegate: self];
+	controllingViewController = [[ControllingViewController alloc] initWithDelegate:self];
+	connectingViewController = [[ConnectingViewController alloc] initWithDelegate:self];
+	
+	[connectingViewController retain];
+	[qrCodeReaderViewController retain];
+	[controllingViewController retain];
+	
+    return YES;
+}
 
+-(void) showStartupScreen
+{
 	splashView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0, 320, 480)];
 	splashView.image = [UIImage imageNamed:@"Default.png"];
 	[window addSubview:splashView];
@@ -40,23 +50,45 @@
 	splashView.alpha = 0.0;
 	splashView.frame = CGRectMake(-60, -60, 440, 600);
 	[UIView commitAnimations];
-	
-    return YES;
 }
 
-- (void)startupAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+-(void)startupAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	[splashView removeFromSuperview];
 	[splashView release];
+	
+	[window addSubview:connectingViewController.view];
+	[window addSubview:controllingViewController.view];
+	[window addSubview:qrCodeReaderViewController.view];
+	
+	[self startReadingQrCode];
 }
 
--(void) connectingViewDidFinishWithUrl: (NSString*) url {
-	NSLog(@"%@", url);
-	
-	// CRAP
-	//ControllingViewController *webController = [[ControllingViewController alloc] initWithUrl: url];
-	//[ControllingViewController presentModalViewController:webController animated:YES];
-	//[webController setView:[webController view]];
-	//[connectingViewController.view addSubview:controllingViewController.view];
+-(void) startReadingQrCode
+{
+	[window bringSubviewToFront:qrCodeReaderViewController.view];
+	[qrCodeReaderViewController startReadingQrCode];
+}
+
+-(void) QrCodeReaderDidScanResult: (NSString *) result
+{
+	[window sendSubviewToBack: qrCodeReaderViewController.view];
+	[self startControllingModeWithUrl: result];
+}
+
+-(void) QrCodeReaderDidCancle {
+	[window sendSubviewToBack: qrCodeReaderViewController.view];
+	[self showConnectingView];
+}
+
+-(void) startControllingModeWithUrl: (NSString *) url
+{
+	[window bringSubviewToFront:controllingViewController.view];
+	[controllingViewController openWebsiteWithUrl:url];
+}
+
+-(void) showConnectingView
+{
+	[window bringSubviewToFront:connectingViewController.view];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -107,6 +139,7 @@
 }
 
 - (void)dealloc {
+	[qrCodeReaderViewController release];
     [connectingViewController release];
 	[controllingViewController release];
     [window release];

@@ -7,69 +7,24 @@
 //
 
 #import "ConnectingViewController.h"
-#import "ControllingViewController.h"
 
 @implementation ConnectingViewController
 
-- (void)viewDidLoad
+- (id) initWithDelegate: (id <ConnectingViewDelegate>) delegate
 {
-	firstTimeScanned = false;
-}
-
- // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidAppear:(BOOL) animated {
-	
-	[super viewDidAppear:animated];
-	if(!firstTimeScanned) [self scanConnectingInformation];
-	
+	self = [super initWithNibName:@"ConnectingView" bundle:nil];
+	actionDelegate = delegate;
+	return self;
 }
 
 - (IBAction) connectWithCameraButtonClicked: (id) sender
 {
-	[self scanConnectingInformation];
+	[actionDelegate startReadingQrCode];
 }
 
 - (IBAction) playButtonClicked: (id) sender 
 {
-	NSString *url = [NSString stringWithFormat:@"%@?id=%@", urlTextField.text, idTextField.text];
-	[self showControllingViewWithUrl:url];
-}
-
-- (void) showControllingViewWithUrl: (NSString *) url
-{
-	ControllingViewController *webController = [[ControllingViewController alloc] initWithUrl: url];
-	[self presentModalViewController:webController animated:YES];
-	[webController retain];
-	firstTimeScanned = false;
-}
-
-- (void)scanConnectingInformation {
-	
-	firstTimeScanned = true;
-	
-	ZXingWidgetController *widController = [[ZXingWidgetController alloc] initWithDelegate:self showCancel:YES OneDMode:NO];
-	QRCodeReader* qrcodeReader = [[QRCodeReader alloc] init];
-	NSSet *readers = [[NSSet alloc ] initWithObjects:qrcodeReader,nil];
-	[qrcodeReader release];
-	widController.readers = readers;
-	[readers release];
-	/*widController.soundToPlay =
-	[NSURL fileURLWithPath:[mainBundle pathForResource:@"beep-beep" ofType:@"aiff"] isDirectory:NO];*/
-	[self presentModalViewController:widController animated:YES];
-	[widController release];
-	
-}
-
-#pragma mark -
-#pragma mark ZXingDelegateMethods
-
-- (void)zxingController:(ZXingWidgetController*)controller didScanResult:(NSString *)result {
-	[self dismissModalViewControllerAnimated:NO];
-	[self showControllingViewWithUrl:result];
-}
-
-- (void)zxingControllerDidCancel:(ZXingWidgetController*)controller {
-	[self dismissModalViewControllerAnimated:YES];
+	[actionDelegate startControllingModeWithUrl: urlTextField.text];
 }
 
 - (void)dealloc {

@@ -8,25 +8,32 @@
 
 #import "ConnectingViewController.h"
 #import "ControllingViewController.h"
+#import "QrCodeReaderViewController.h"
 
-@class ConnectingViewController;
-@class ControllingViewController;
-
-@interface HandshakeAppDelegate : NSObject <UIApplicationDelegate, ConnectingViewDelegate> {
+@interface HandshakeAppDelegate : NSObject <UIApplicationDelegate, 
+											QrCodeReaderDelegate, 
+											ConnectingViewDelegate, 
+											ControllingViewDelegate> {
     
 	UIWindow *window;
 	UIImageView *splashView;
     ConnectingViewController *connectingViewController;
 	ControllingViewController *controllingViewController;
+	QrCodeReaderViewController *qrCodeReaderViewController;
 	
 }
 
--(void) connectingViewDidFinishWithUrl: (NSString*) url;
-- (void)startupAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
+-(void) showStartupScreen;
+-(void) startupAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
+
+-(void) startReadingQrCode;
+-(void) QrCodeReaderDidScanResult: (NSString *) result;
+-(void) QrCodeReaderDidCancle;
+
+-(void) startControllingModeWithUrl: (NSString *) url;
+-(void) showConnectingView;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet ConnectingViewController *connectingViewController;
-@property (nonatomic, retain) IBOutlet ControllingViewController *controllingViewController;
 
 @end
 

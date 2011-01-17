@@ -7,29 +7,27 @@
 //
 #import <UIKit/UIKit.h>
 #import "ControllingViewController.h"
-#import "ZXingWidgetController.h"
-#import "QRCodeReader.h"
 #import "UIDeviceHardware.h"
 
 @protocol ConnectingViewDelegate
-	-(void) connectingViewDidFinishWithUrl: (NSString*) url;
+
+-(void) startReadingQrCode;
+-(void) startControllingModeWithUrl: (NSString *) url;
+
 @end
 
-@interface ConnectingViewController : UIViewController < ZXingDelegate > {
+@interface ConnectingViewController : UIViewController {
 	
-	id <ConnectingViewDelegate> finishDelegate;
+	id <ConnectingViewDelegate> actionDelegate;
 	IBOutlet UITextField *urlTextField;
 	IBOutlet UITextField *idTextField;
 	IBOutlet UIButton *playButton;
 	IBOutlet UIButton *connectWithCameraButton;
 	
-	BOOL firstTimeScanned;
-	
 }
-
-- (void) scanConnectingInformation;
+- (id) initWithDelegate: (id <ConnectingViewDelegate>) delegate;
 - (IBAction) playButtonClicked: (id) sender;
 - (IBAction) connectWithCameraButtonClicked: (id) sender;
-- (void) showControllingViewWithUrl: (NSString *) url;
+
 @end
 
