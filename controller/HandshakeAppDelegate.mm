@@ -28,7 +28,25 @@
 	[window addSubview:connectingViewController.view];
     [window makeKeyAndVisible];
 
+	splashView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0, 320, 480)];
+	splashView.image = [UIImage imageNamed:@"Default.png"];
+	[window addSubview:splashView];
+	[window bringSubviewToFront:splashView];
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDuration:0.5];
+	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:window cache:YES];
+	[UIView setAnimationDelegate:self]; 
+	[UIView setAnimationDidStopSelector:@selector(startupAnimationDone:finished:context:)];
+	splashView.alpha = 0.0;
+	splashView.frame = CGRectMake(-60, -60, 440, 600);
+	[UIView commitAnimations];
+	
     return YES;
+}
+
+- (void)startupAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+	[splashView removeFromSuperview];
+	[splashView release];
 }
 
 -(void) connectingViewDidFinishWithUrl: (NSString*) url {

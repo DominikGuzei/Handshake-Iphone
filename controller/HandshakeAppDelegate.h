@@ -15,12 +15,14 @@
 @interface HandshakeAppDelegate : NSObject <UIApplicationDelegate, ConnectingViewDelegate> {
     
 	UIWindow *window;
+	UIImageView *splashView;
     ConnectingViewController *connectingViewController;
 	ControllingViewController *controllingViewController;
 	
 }
 
 -(void) connectingViewDidFinishWithUrl: (NSString*) url;
+- (void)startupAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet ConnectingViewController *connectingViewController;
