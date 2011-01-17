@@ -12,7 +12,7 @@
 @class ConnectingViewController;
 @class ControllingViewController;
 
-@interface HandshakeAppDelegate : NSObject <UIApplicationDelegate, ZBarReaderDelegate, ConnectingViewDelegate> {
+@interface HandshakeAppDelegate : NSObject <UIApplicationDelegate, ConnectingViewDelegate> {
     
 	UIWindow *window;
     ConnectingViewController *connectingViewController;

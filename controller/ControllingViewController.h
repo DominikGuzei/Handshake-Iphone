@@ -7,15 +7,8 @@
 //
 #import <UIKit/UIKit.h>
 
-
-@protocol ControllerViewDelegate
--(void) setDeviceVersion;
-@end
-
-
-@interface ControllingViewController : UIViewController <ControllerViewDelegate> {
+@interface ControllingViewController : UIViewController  {
 	
-	id <ControllerViewDelegate> finishDelegate;
 	NSURL *url;
 	IBOutlet UIWebView *webView;
 	IBOutlet UIToolbar *bottomBar;

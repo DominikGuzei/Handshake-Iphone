@@ -24,15 +24,10 @@
 	return self;
 }
 
--(void) setDeviceVersion {
-	
-}
-
 -(IBAction) chooseOtherGame {
 	ConnectingViewController *connectingViewController = [[ConnectingViewController alloc] init];
 	[self presentModalViewController:connectingViewController animated:YES];
 	[connectingViewController retain];
-	[finishDelegate setDeviceVersion];
 }
 
 -(IBAction) showConnectingView {
